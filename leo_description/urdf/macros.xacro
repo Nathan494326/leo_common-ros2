@@ -121,6 +121,7 @@
           <mesh filename="package://leo_description/models/Chassis_outline.stl"/>
         </geometry>
       </collision>
+
     </link>
 
     <xacro:rocker_link name="L"/>
@@ -214,8 +215,8 @@
       <parent link="${link_prefix}base_link"/>
       <child link="${link_prefix}rocker_L_link"/>
       <axis xyz="0 1 0"/>
-      <limit effort="100.0" lower="-0.24" upper="0.24" velocity="100.0"/>
-      <dynamics friction="1.0" damping="0.1"/>
+      <limit effort="100.0" lower="-5.0" upper="5.0" velocity="100.0"/>
+      <dynamics friction="1.0" damping="0.01"/>
     </joint>
 
     <joint name="${joint_prefix}rocker_R_joint" type="${rockers_joint_type}">
@@ -223,8 +224,8 @@
       <parent link="${link_prefix}base_link"/>
       <child link="${link_prefix}rocker_R_link"/>
       <axis xyz="0 1 0"/>
-      <limit effort="100.0" lower="-0.24" upper="0.24" velocity="100.0"/>
-      <dynamics friction="1.0" damping="0.1"/> 
+      <limit effort="100.0" lower="-5.0" upper="5.0" velocity="100.0"/>
+      <dynamics friction="1.0" damping="0.01"/> 
       <mimic joint="rocker_L_joint"/>
     </joint>
 
@@ -238,8 +239,8 @@
       <parent link="${link_prefix}rocker_L_link"/>
       <child link="${link_prefix}wheel_FL_link"/>
       <axis xyz="0 -1 0"/>
-      <limit effort="2.0" velocity="6.0"/>
-      <dynamics friction="0.3125" damping="0.1"/>
+      <limit effort="40.0" velocity="100.0"/>
+      <dynamics friction="0.3125" damping="0.01"/>
     </joint>
 
     <joint name="${joint_prefix}wheel_RL_joint" type="continuous">
@@ -252,8 +253,8 @@
       <parent link="${link_prefix}rocker_L_link"/>
       <child link="${link_prefix}wheel_RL_link"/>
       <axis xyz="0 -1 0"/>
-      <limit effort="2.0" velocity="6.0"/>
-      <dynamics friction="0.3125" damping="0.1"/>
+      <limit effort="40.0" velocity="100.0"/>
+      <dynamics friction="0.3125" damping="0.01"/>
     </joint>
 
     <joint name="${joint_prefix}wheel_FR_joint" type="continuous">
@@ -266,8 +267,8 @@
       <parent link="${link_prefix}rocker_R_link"/>
       <child link="${link_prefix}wheel_FR_link"/>
       <axis xyz="0 1 0"/>
-      <limit effort="2.0" velocity="6.0"/>
-      <dynamics friction="0.3125" damping="0.1"/>
+      <limit effort="40.0" velocity="100.0"/>
+      <dynamics friction="0.3125" damping="0.01"/>
     </joint>
 
     <joint name="${joint_prefix}wheel_RR_joint" type="continuous">
@@ -280,8 +281,8 @@
       <parent link="${link_prefix}rocker_R_link"/>
       <child link="${link_prefix}wheel_RR_link"/>
       <axis xyz="0 1 0"/>
-      <limit effort="2.0" velocity="6.0"/>
-      <dynamics friction="0.3125" damping="0.1"/> 
+      <limit effort="40.0" velocity="100.0"/>
+      <dynamics friction="0.3125" damping="0.01"/> 
     </joint>
 
     <xacro:if value="${default_antenna}">
@@ -423,13 +424,13 @@
             <ode>
               <mu>1</mu>
               <mu2>1</mu2>
-              <slip1>0.035</slip1>
+              <slip1>0</slip1>
               <slip2>0</slip2>
               <fdir1>0 0 1</fdir1>
             </ode>
             <bullet>
-              <friction>1</friction>
-              <friction2>1</friction2>
+              <friction>10</friction>
+              <friction2>10</friction2>
               <rolling_friction>0.1</rolling_friction>
             </bullet>
           </friction>
@@ -444,13 +445,13 @@
             <ode>
               <mu>1</mu>
               <mu2>1</mu2>
-              <slip1>0.035</slip1>
+              <slip1>0</slip1>
               <slip2>0</slip2>
               <fdir1>0 0 1</fdir1>
             </ode>
             <bullet>
-              <friction>1</friction>
-              <friction2>1</friction2>
+              <friction>10</friction>
+              <friction2>10</friction2>
               <rolling_friction>0.1</rolling_friction>
             </bullet>
           </friction>
@@ -465,13 +466,13 @@
             <ode>
               <mu>1</mu>
               <mu2>1</mu2>
-              <slip1>0.035</slip1>
+              <slip1>0</slip1>
               <slip2>0</slip2>
               <fdir1>0 0 1</fdir1>
             </ode>
             <bullet>
-              <friction>1</friction>
-              <friction2>1</friction2>
+              <friction>10</friction>
+              <friction2>10</friction2>
               <rolling_friction>0.1</rolling_friction>
             </bullet>
           </friction>
@@ -486,13 +487,13 @@
             <ode>
               <mu>1</mu>
               <mu2>1</mu2>
-              <slip1>0.035</slip1>
+              <slip1>0</slip1>
               <slip2>0</slip2>
               <fdir1>0 0 1</fdir1>
             </ode>
             <bullet>
-              <friction>1</friction>
-              <friction2>1</friction2>
+              <friction>10</friction>
+              <friction2>10</friction2>
               <rolling_friction>0.1</rolling_friction>
             </bullet>
           </friction>
@@ -592,6 +593,15 @@
       <plugin filename="libignition-gazebo-imu-system.so"
         name="ignition::gazebo::systems::Imu">
       </plugin>
+
+      <plugin 
+          filename="ignition-gazebo-pose-publisher-system" 
+          name="ignition::gazebo::systems::PosePublisher">
+          <publish_link_pose>false</publish_link_pose>
+          <publish_nested_model_pose>true</publish_nested_model_pose>
+          <update_frequency>20</update_frequency>
+      </plugin>
+
     </gazebo>
 
     <gazebo reference="${link_prefix}imu_frame">
@@ -614,8 +624,8 @@
         <right_joint>wheel_RR_joint</right_joint>
         <wheel_separation>0.358</wheel_separation>
         <wheel_radius>0.0625</wheel_radius>
-        <!-- <frame_id>odom</frame_id> --> <!-- Change frame names to avoid odom in TF tree -->
-        <frame_id>not_connected_odom</frame_id>
+        <!-- <frame_id>odom</frame_id>  -->
+        <frame_id>not_connected_odom</frame_id>  Change frame names to avoid odom in TF tree
         <!-- <child_frame_id>${link_prefix}base_footprint</child_frame_id> -->
         <child_frame_id>${link_prefix}not_connected_base_footprint</child_frame_id>
         <odom_publish_frequency>20</odom_publish_frequency>
