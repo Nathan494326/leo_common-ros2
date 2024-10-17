@@ -590,6 +590,7 @@
         name="ignition::gazebo::systems::JointStatePublisher">
         <topic>${link_prefix}joint_states</topic>
       </plugin>
+
       <plugin filename="libignition-gazebo-imu-system.so"
         name="ignition::gazebo::systems::Imu">
       </plugin>
@@ -601,6 +602,8 @@
           <publish_nested_model_pose>true</publish_nested_model_pose>
           <update_frequency>20</update_frequency>
       </plugin>
+
+
 
     </gazebo>
 
